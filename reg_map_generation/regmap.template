@@ -5,6 +5,18 @@
 #
 # Please don't edit this manually!!!
 ########################################################################################################################
-{% for _item in items %}
-{{ '{}'.format(_item) }}
+{% for _structure in structures %}
+/* {{ '{}'.format(_structure) }} */
+typedef struct {
+{% for _item in _structure.members %}
+---
+{% if isinstance(_item, list) %}
+{% for _sub_item in _item %}
+    --{{ '{}'.format(_sub_item) }}
+{% endfor %}
+{% else %}
+    --{{ '{}'.format(_item) }}
+{% endif %}
+{% endfor %}
+} {{ 'st_{}_reg_list'.format(_structure.name) }};
 {% endfor %}

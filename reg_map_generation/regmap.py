@@ -105,8 +105,84 @@ class Item:
         if isinstance(self.address[1], int):
             _add += ' ~ 0x{:0>8X}'.format(self.address[1])
             pass
-        return '{} {} {}; /* {}: {} */'.format(self.permission, self.data_type, _name, _add, self.comments)
+        return '{} {} {}; /* {}: {} */'.format(self.permission, self.data_type, _name, _add, self.__comments)
         pass
+    pass
+
+
+class StructureData:
+    def __init__(self, name):
+        if isinstance(name, str):
+            self.__name = name
+        else:
+            raise SystemError('structure name must be string type')
+        self.__items = {}
+        pass
+
+    @property
+    def name(self):
+        return self.__name
+        pass
+
+    @property
+    def members(self):
+        _items_list = list(self.__items.values())
+        _items_list = sorted(_items_list, key=lambda _item: _item.address[0])
+        self.__items_check(_items_list)
+        return _items_list
+        pass
+
+    def add_item(self, item):
+        if isinstance(item, Item):
+            if item.name in self.__items:
+                _item_tmp = self.__items[item.name]
+                if isinstance(_item_tmp, list):
+                    item.id = len(_item_tmp)
+                    _item_tmp.append(item)
+                    pass
+                elif isinstance(_item_tmp, Item):
+                    _item_tmp.id = 0
+                    item.id = 1
+                    self.__items[item.name] = [_item_tmp, item]
+                else:
+                    raise SystemError('system error for tool(item:{} is invalid)'.format(self.__items[item.name]))
+                pass
+            else:
+                self.__items[item.name] = item
+        pass
+
+    @staticmethod
+    def __items_check(items):
+        if isinstance(items, list):
+            _last_address = None
+            for _item in items:
+                if _last_address is None:
+                    if _item.address[1] is None:
+                        _last_address = _item.address[0]
+                        pass
+                    else:
+                        _last_address = _item.address[1]
+                        pass
+                    pass
+                else:
+                    if _item.address[1] is None:
+                        _align_size = _item.address[0] - _last_address
+                        _last_address = _item.address[0]
+                        pass
+                    else:
+                        _align_size = _item.address[1] - _last_address
+                        _last_address = _item.address[1]
+                        pass
+
+                    if _align_size != 4:
+                        raise SystemError('address error for item: {}'.format(_item))
+                    pass
+                pass
+            pass
+        pass
+
+    def __str__(self):
+        return '{}: {} members'.format(self.__name, len(self.__items))
     pass
 
 
@@ -136,17 +212,37 @@ def main():
         _parser.print_help()
         pass
     else:
-        _items = []
+        _step = 0
+        _structures = []
+        _structure = None
         with open(_args.input, 'r') as rf:
             for _line in rf:
                 _line = _line.strip()
                 if _line != '':
-                    _item = Item(_line)
-                    _items.append(_item)
-                    pass
-                pass
+                    if _step == 0:
+                        if _line.startswith('['):
+                            _structure = StructureData(_line[1:].lower())
+                            _step = 1
+                            pass
+                        pass
+                    elif _step == 1:
+                        if _line.endswith(']'):
+                            _structures.append(_structure)
+                            _structure = None
+                            _step = 0
+                            pass
+                        else:
+                            _item = Item(_line)
+                            if isinstance(_structure, StructureData):
+                                _structure.add_item(_item)
+                            else:
+                                raise SystemError('system error for tool(structure data is not init)')
+                            pass
+                        pass
+                    else:
+                        raise SystemError('system error for tool(invalid step)')
             pass
-        _items = sorted(_items, key=lambda _item: _item.address[0])
+        # _items = sorted(_items, key=lambda _item: _item.address[0])
         _here = _os.path.abspath(_os.path.dirname(__file__))
         _env = Environment(loader=FileSystemLoader(_here),
                            trim_blocks=True,
@@ -154,8 +250,8 @@ def main():
         _reg_map_file = 'regmap.template'
         _reg_map_template = _env.get_template(_reg_map_file)
         _reg_map_result = _reg_map_template.render(filename=_args.output,
-                                                   items=_items,
-                                                   len=len(_items),
+                                                   structures=_structures,
+                                                   len=len(_structures),
                                                    script_version=script_version)
         with open(_args.output, 'w') as f:
             f.write(_reg_map_result)

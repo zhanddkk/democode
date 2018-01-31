@@ -1,3 +1,4 @@
+[sys_ctrl
 APLL_LOCK 0x7E00_F000 R/W Control PLL locking period for APLL 0x0000_FFFF
 MPLL_LOCK 0x7E00_F004 R/W Control PLL locking period for MPLL 0x0000_FFFF
 EPLL_LOCK 0x7E00_F008 R/W Control PLL locking period for EPLL 0x0000_FFFF
@@ -15,9 +16,7 @@ PCLK_GATE 0x7E00_F034 R/W Control PCLK clock gating 0xFFFF_FFFF
 SCLK_GATE 0x7E00_F038 R/W Control SCLK clock gating 0xFFFF_FFFF
 MEM0_CLK_GATE 0x7E00_F03C R/W Control MEM0 clock gating 0xFFFF_FFFF
 RESERVED 0x7E00_F040~0x7E00_F0FC - RESERVED -
-
-
-AHB_CON0 0x7E00_F000 R/W Configure AHB I/P/X/F bus 0x0400_0000
+AHB_CON0 0x7E00_F100 R/W Configure AHB I/P/X/F bus 0x0400_0000
 AHB_CON1 0x7E00_F104 R/W Configure AHB M1/M0/T1/T0 bus 0x0000_0000
 AHB_CON2 0x7E00_F108 R/W Configure AHB R/S1/S0 bus 0x0000_0000
 CLK_SRC2 0x7E00_F10C R/W Select Audio2 clock source 0x0000_0000
@@ -31,12 +30,8 @@ QOS_OVERRIDE1 0x7E00_F128 R/W Override DMC1 QOS 0x0000_0000
 MEM_CFG_STAT 0x7E00_F12C R Memory subsystem setup status 0x0000_0000
 RESERVED 0x7E00_F130 R/W Should be 0x0 0x0000_0000
 RESERVED 0x7E00_F130~0x7E00_F1FC - RESERVED -
-
-
 RESERVED 0x7E00_F200~0x7E00_F23C R/W Should be 0x0 0x0000_0000~0x0000_0000
 RESERVED 0x7E00_F240~0x7E00_F800 - RESERVED -
-
-
 PWR_CFG 0x7E00_F804 R/W Configure power manager 0x0000_0001
 EINT_MASK 0x7E00_F808 R/W Configure EINT(external interrupt) mask 0x0000_0000
 RESERVED 0x7E00_F80C - RESERVED -
@@ -51,8 +46,6 @@ RESERVED 0x7E00_F82C - RESERVED -
 MTC_STABLE 0x7E00_F830 R/W MTC stable counter 0xFFFF_FFFF
 MISC_CON 0x7E00_F838 R/W Bus control 0x0000_0000
 RESERVED 0x7E00_F838~0x7E00_F8FC - RESERVED -
-
-
 OTHERS 0x7E00_F900 R/W Others control register 0x0000_801E
 RST_STAT 0x7E00_F904 R Reset status register 0x0000_0001
 WAKEUP_STAT 0x7E00_F908 R/W Wakeup status register 0x0000_0000
@@ -61,3 +54,38 @@ INFORM0 0x7E00_FA00 R/W Information register0 0x0000_0000
 INFORM1 0x7E00_FA04 R/W Information register1 0x0000_0000
 INFORM2 0x7E00_FA08 R/W Information register2 0x0000_0000
 INFORM3 0x7E00_FA0C R/W Information register3 0x0000_0000
+]
+[uart0
+ULCON0 0x7F005000 R/W UART channel 0 line control register 0x00
+UCON0 0x7F005004 R/W UART channel 0 control register 0x00
+UFCON0 0x7F005008 R/W UART channel 0 FIFO control register 0x0
+UMCON0 0x7F00500C R/W UART channel 0 Modem control register 0x0
+UTRSTAT0 0x7F005010 R UART channel 0 Tx/Rx status register 0x6
+UERSTAT0 0x7F005014 R UART channel 0 Rx error status register 0x0
+UFSTAT0 0x7F005018 R UART channel 0 FIFO status register 0x00
+UMSTAT0 0x7F00501C R UART channel 0 Modem status register 0x0
+UTXH0 0x7F005020 W UART channel 0 transmit buffer register -
+URXH0 0x7F005024 R UART channel 0 receive buffer register 0x00
+UBRDIV0 0x7F005028 R/W UART channel 0 Baud rate divisior register 0x0000
+UDIVSLOT0 0x7F00502C R/W UART channel 0 Dividing slot register 0x0000
+UINTP0 0x7F005030 R/W UART channel 0 Interrupt Pending Register 0x0
+UINTSP0 0x7F005034 R/W UART channel 0 Interrupt Source Pending Register 0x0
+UINTM0 0x7F005038 R/W UART channel 0 Interrupt Mask Register 0x0
+]
+[uart1
+ULCON1 0x7F005400 R/W UART channel 1 line control register 0x00
+UCON1 0x7F005404 R/W UART channel 1 control register 0x00
+UFCON1 0x7F005408 R/W UART channel 1 FIFO control register 0x0
+UMCON1 0x7F00540C R/W UART channel 1 Modem control register 0x0
+UTRSTAT1 0x7F005410 R UART channel 1 Tx/Rx status register 0x6
+UERSTAT1 0x7F005414 R UART channel 1 Rx error status register 0x0
+UFSTAT1 0x7F005418 R UART channel 1 FIFO status register 0x00
+UMSTAT1 0x7F00541C R UART channel 1 Modem status register 0x0
+UTXH1 0x7F005420 W UART channel 1 transmit buffer register -
+URXH1 0x7F005424 R UART channel 1 receive buffer register 0x00
+UBRDIV1 0x7F005428 R/W UART channel 1 Baud rate divisior register 0x0000
+UDIVSLOT1 0x7F00542C R/W UART channel 1 Dividing slot register 0x0000
+UINTP1 0x7F005430 R/W UART channel 1 Interrupt Pending Register 0x0
+UINTSP1 0x7F005434 R/W UART channel 1 Interrupt Source Pending Register 0x0
+UINTM1 0x7F005438 R/W UART channel 1 Interrupt Mask Register 0x0
+]
