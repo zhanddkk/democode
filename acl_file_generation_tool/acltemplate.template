@@ -1,0 +1,15 @@
+########################################################################################################################
+# {{ dgm.data_dictionary_version.template }}
+# {{ dgm.data_dictionary_version.content }}
+# {{ '{}'.format(dgm.product_information).rstrip() }}
+#=======================================================================================================================
+# Original Author : ACL Generation Tool (v{{script_version}})
+# Created Date    : {{ date }}
+# File Path       : {{ filename }}
+# Item Number     : {{ len }}
+#
+# Please don't edit this manually!!!
+########################################################################################################################
+{% for _acl_item in acl %}
+{{ '0x{:0>8X}'.format(_acl_item.hash) }},{{ _acl_item.topic }},{{ _acl_item.permission }}
+{% endfor %}

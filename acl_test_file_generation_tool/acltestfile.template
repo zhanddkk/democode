@@ -1,0 +1,32 @@
+/***********************************************************************************************************************
+ * {{ dgm.data_dictionary_version.template }}
+ * {{ dgm.data_dictionary_version.content }}
+ * {{ '{}'.format(dgm.product_information).rstrip() }}
+ =======================================================================================================================
+ * Original Author : ACL Test File Generation Tool (v{{script_version}})
+ * File Path       : {{ filename }}
+ * Item Number     : {{ len }}
+ *
+ * Please don't edit this file manually!!!
+***********************************************************************************************************************/
+{% set def_name = '_{}_'.format(filename.upper().replace('.', '_')) %}
+#ifndef {{ def_name }}
+#define {{ def_name }}
+#include <stdint.h>
+#include <stdbool.h>
+
+typedef struct {
+    const char *topic;
+    const char *username;
+    uint32_t access;
+    bool result;
+}st_acl_test_data;
+
+extern const st_acl_test_data acl_test_data[] = {
+{% for _acl_test_item in acl_test %}
+    {"{{ _acl_test_item.topic }}", "{{ _acl_test_item.user }}", {{ '0x{:0>8X}'.format(_acl_test_item.access) }}, {{ _acl_test_item.result }}},
+{% endfor %}
+};
+
+extern const uint32_t acl_test_data_len = sizeof(acl_test_data) / sizeof(st_acl_test_data);
+#endif /* {{ def_name }} */
