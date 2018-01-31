@@ -1,10 +1,34 @@
-########################################################################################################################
-# Original Author : Reg Map Generation Tool (v{{script_version}})
-# File Path       : {{ filename }}
-# Item Number     : {{ len }}
-#
-# Please don't edit this manually!!!
-########################################################################################################################
-{% for _item in items %}
-{{ '{}'.format(_item) }}
+/***********************************************************************************************************************
+ * Original Author : Register Map File Generation Tool (v{{script_version}})
+ * File Path       : {{ filename }}
+ * Item Number     : {{ len }}
+ *
+ * Please don't edit this file manually!!!
+***********************************************************************************************************************/
+{% set def_name = '_{}_'.format(filename.upper().replace('.', '_')) %}
+#ifndef {{ def_name }}
+#define {{ def_name }}
+#include <stdint.h>
+
+#define __I     volatile const       /*!< Defines 'read only' permissions */
+#define __O     volatile             /*!< Defines 'write only' permissions */
+#define __IO    volatile             /*!< Defines 'read / write' permissions */
+
+{% for _structure in structures %}
+{% set _tmp_name = _structure.name.lower().strip().replace(' ', '_') %}
+/*====================================================================================================================*/
+/* {{ '{}'.format(_structure) }} */
+/*--------------------------------------------------------------------------------------------------------------------*/
+struct {{ '{}_reg_map'.format(_tmp_name) }} {
+{% for _item in _structure.members %}
+{% if isinstance(_item, list) %}
+{% for _sub_item in _item %}
+    {{ '{}'.format(_sub_item) }}
 {% endfor %}
+{% else %}
+    {{ '{}'.format(_item) }}
+{% endif %}
+{% endfor %}
+} volatile *const {{ 'r_{}'.format(_tmp_name) }} = (void *){{ '0x{:0>8X}'.format(_structure.base_address) }};
+{% endfor %}
+#endif /* {{ def_name }} */
