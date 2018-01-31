@@ -1,4 +1,5 @@
 import hashlib
+from collections import OrderedDict
 from jinja2 import Environment, FileSystemLoader
 import ddclient.dgmanager
 from ddclient.dgpayload import (E_DATAGRAM_ACTION_PUBLISH,
@@ -9,14 +10,15 @@ import os as _os
 
 
 class AclItem:
-    __user_map = {
-        'UC': 'UC',
-        'SLC_UPS': 'SLC',
-        'SLC_NMC': 'NMC',
-        'HMI': 'HMI',
-        'Tuner': 'Tuner'
-    }
-
+    __user_map = OrderedDict(
+        (
+            ('UC', 'UC'),
+            ('SLC_UPS', 'SLC'),
+            ('SLC_NMC', 'NMC'),
+            ('HMI', 'HMI'),
+            ('Tuner', 'Tuner')
+        )
+    )
     __permission_map = {
         'producer': {
             'Setting': {
@@ -147,7 +149,7 @@ class AclItem:
 
 
 ########################################################################################################################
-script_version = "0.0.1"
+script_version = "0.0.2"
 ########################################################################################################################
 
 
