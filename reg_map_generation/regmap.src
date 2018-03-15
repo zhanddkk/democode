@@ -299,3 +299,31 @@ PRIORITY 0x7F008280 R/W Priority Control Register 0x000003FF
 SERVICE 0x7F008284 R Current Service Register 0x0
 SERVICEPEND 0x7F008288 R Current Service Pending Register 0x0
 ]
+[Nand flash controller
+NFCONF 0x70200000 R/W Configuration register 0xX000_100X
+NFCONT 0x70200004 R/W Control register 0x0001_00C6
+NFCMMD 0x70200008 R/W Command register 0x0000_0000
+NFADDR 0x7020000c R/W Address register 0x0000_0000
+NFDATA 0x70200010 R/W Data register 0xXXXX_XXXX
+NFMECCD0 0x70200014 R/W 1st and 2nd main ECC data register 0x0000_0000
+NFMECCD1 0x70200018 R/W 3rd and 4th main ECC data register 0x0000_0000
+NFSECCD 0x7020001c R/W Spare ECC read register 0x0000_0000
+NFSBLK 0x70200020 R/W Programmable start block address register 0x0000_0000
+NFEBLK 0x70200024 R/W Programmable end block address register 0x0000_0000
+NFSTAT 0x70200028 R/W NAND status registet 0x0080_001D
+NFECCERR0 0x7020002C R ECC error status0 register 0xXXXX_XXXX
+NFECCERR1 0x70200030 R ECC error status1 register 0x0000_0000
+NFMECC0 0x70200034 R Generated ECC status0 register 0xXXXX_XXXX
+NFMECC1 0x70200038 R Generated ECC status1 register 0xXXXX_XXXX
+NFSECC 0x7020003C R Generated Spare area ECC status register 0xXXXX_XXXX
+NFMLCBITPT 0x70200040 R 4-bit ECC error bit pattern register 0x0000_0000
+NF8ECCERR0 0x70200044 R 8bit ECC error status0 register 0x4000_0000
+NF8ECCERR1 0x70200048 R 8bit ECC error status1 register 0x0000_0000
+NF8ECCERR2 0x7020004C R 8bit ECC error status2 register 0x0000_0000
+NFM8ECC0 0x70200050 R Generated 8-bit ECC status0 register 0xXXXX_XXXX
+NFM8ECC1 0x70200054 R Generated 8-bit ECC status1 register 0xXXXX_XXXX
+NFM8ECC2 0x70200058 R Generated 8-bit ECC status2 register 0xXXXX_XXXX
+NFM8ECC3 0x7020005C R Generated 8-bit ECC status3 register 0xXXXX_XXXX
+NFMLC8BITPT0 0x70200060 R 8-bit ECC error bit pattern 0 register 0x0000_0000
+NFMLC8BITPT1 0x70200064 R 8-bit ECC error bit pattern 1 register 0x0000_0000
+]
