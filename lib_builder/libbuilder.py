@@ -85,7 +85,7 @@ def build_cn_cbor():
 
         _os.chdir(_project_dir)
         subprocess.call(['git', 'checkout', 'Dev'])
-        subprocess.call(['git', 'checkout', '-B', 'build', '588fb41c1b0e6dc7cb27b74a0e29cf5bbcf2c994'])
+        # subprocess.call(['git', 'checkout', '-B', 'build', '588fb41c1b0e6dc7cb27b74a0e29cf5bbcf2c994'])
         if _os.path.exists('build'):
             pass
         else:
@@ -157,6 +157,20 @@ def build_libusb():
     pass
 
 
+def build_tinycbor():
+    _project_dir = 'secure_power_agilis_modules_tiny_cbor'
+    subprocess.call(
+        ['git', 'clone', 'ssh://teamforge.schneider-electric.com:29418/{}'.format(_project_dir)])
+    _os.chdir(_project_dir)
+    subprocess.call(['git', 'checkout', 'Dev'])
+    # _os.chdir('build_unix')
+    subprocess.call(['make', 'all', 'funopen-pass=1'])
+    subprocess.call(['make', 'install', 'prefix={}/usr/local'.format(_build_output)])
+    _os.chdir(_here)
+    subprocess.call(['rm', '-rf', _project_dir])
+    pass
+
+
 def main():
     # build_lib_mosquitto()
     # build_lib_modbus()
@@ -164,6 +178,7 @@ def main():
     # build_google_gmock()
     # build_berkeley_db()
     # build_libusb()
+    build_tinycbor()
     pass
 
 

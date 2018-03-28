@@ -44,8 +44,8 @@ def main():
     user = 'Tuner'
     instance.username_pw_set(username=user, password=password)
     # instance.connect('169.254.5.1', 8883, 60)
-    instance.connect('10.177.58.98', 8883, 60)
-    # instance.connect('192.168.1.102', 8883, 60)
+    # instance.connect('10.177.58.98', 8883, 60)
+    instance.connect('192.168.1.102', 8883, 60)
     instance.subscribe('Test', 0)
     instance.loop_start()
 
@@ -61,12 +61,15 @@ def main_no_cet():
     i = 0
     instance = _Client("TestClient")
     instance.on_message = _on_message
-    user = 'Simulator1'
-    password = '3279'
+    # user = 'Simulator1'
+    # password = '3279'
+    user = 'NMC2'
+    password = '2779'
     instance.username_pw_set(username=user, password=password)
     # instance.connect('192.168.23.3', 1883, 60)
-    instance.connect('192.168.1.101', 1884, 60)
+    instance.connect('192.168.1.101', 1883, 60)
     instance.subscribe('Request/UPSSystem/Setting/MainsConfigurationSetting', 0)
+    # instance.subscribe('Test', 0)
     instance.loop_start()
 
     while True:
