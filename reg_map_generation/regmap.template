@@ -4,6 +4,9 @@
  * Item Number     : {{ len }}
  *
  * Please don't edit this file manually!!!
+{% for _structure in structures %}
+ *  {{ '{}'.format(_structure) }}
+{% endfor %}
 ***********************************************************************************************************************/
 {% set def_name = '_{}_'.format(filename.upper().replace('.', '_')) %}
 #ifndef {{ def_name }}
@@ -29,6 +32,7 @@ struct {{ '{}_reg_map'.format(_tmp_name) }} {
     {{ '{}'.format(_item) }}
 {% endif %}
 {% endfor %}
-} volatile *const {{ 'r_{}'.format(_tmp_name) }} = (void *){{ '0x{:0>8X}'.format(_structure.base_address) }};
+};
+#define {{ 'r_{}'.format(_tmp_name) }} ((volatile struct {{ '{}_reg_map'.format(_tmp_name) }} *){{ '0x{:0>8X}'.format(_structure.base_address) }})
 {% endfor %}
 #endif /* {{ def_name }} */

@@ -92,3 +92,238 @@ UINTP1 0x7F005430 R/W UART channel 1 Interrupt Pending Register 0x0
 UINTSP1 0x7F005434 R/W UART channel 1 Interrupt Source Pending Register 0x0
 UINTM1 0x7F005438 R/W UART channel 1 Interrupt Mask Register 0x0
 ]
+[UART 2
+ULCON2 0x7F005800 R/W UART channel 2 line control register 0x00
+UCON2 0x7F005804 R/W UART channel 2 control register 0x00
+UFCON2 0x7F005808 R/W UART channel 2 FIFO control register 0x0
+RESERVED 0x7F00580C - RESERVED -
+UTRSTAT2 0x7F005810 R UART channel 2 Tx/Rx status register 0x6
+UERSTAT2 0x7F005814 R UART channel 2 Rx error status register 0x0
+UFSTAT2 0x7F005818 R UART channel 2 FIFO status register 0x00
+RESERVED 0x7F00581C - RESERVED -
+UTXH2 0x7F005820 W UART channel 2 transmit buffer register -
+URXH2 0x7F005824 R UART channel 2 receive buffer register 0x00
+UBRDIV2 0x7F005828 R/W UART channel 2 Baud rate divisior register 0x0000
+UDIVSLOT2 0x7F00582C R/W UART channel 2 Dividing slot register 0x0000
+INTP2 0x7F005830 R/W UART channel 2 Interrupt Pending Register 0x0
+UINTSP2 0x7F005834 R/W UART channel 2 Interrupt Source Pending Register 0x0
+UINTM2 0x7F005838 R/W UART channel 2 Interrupt Mask Register 0x0
+]
+[UART 3
+ULCON3 0x7F005C00 R/W UART channel 3 line control register 0x00
+UCON3 0x7F005C04 R/W UART channel 3 control register 0x00
+UFCON3 0x7F005C08 R/W UART channel 3 FIFO control register 0x0
+RESERVED 0x7F005C0C - RESERVED -
+UTRSTAT3 0x7F005C10 R UART channel 3 Tx/Rx status register 0x6
+UERSTAT3 0x7F005C14 R UART channel 3 Rx error status register 0x0
+UFSTAT3 0x7F005C18 R UART channel 3 FIFO status register 0x00
+RESERVED 0x7F005C1C - RESERVED -
+UTXH3 0x7F005C20 W UART channel 3 transmit buffer register -
+URXH3 0x7F005C24 R UART channel 3 receive buffer register 0x00
+UBRDIV3 0x7F005C28 R/W UART channel 3 Baud rate divisior register 0x0000
+UDIVSLOT3 0x7F005C2C R/W UART channel 3 Dividing slot register 0x0000
+INTP3 0x7F005C30 R/W UART channel 3 Interrupt Pending Register 0x0
+UINTSP3 0x7F005C34 R/W UART channel 3 Interrupt Source Pending Register 0x0
+UINTM3 0x7F005C38 R/W UART channel 3 Interrupt Mask Register 0x0
+]
+[GPIO A
+GPACON 0x7F008000 R/W Port A Configuration Register 0x0
+GPADAT 0x7F008004 R/W Port A Data Register Undefined
+GPAPUD 0x7F008008 R/W Port A Pull-up/down Register 0x00005555
+GPACONSLP 0x7F00800C R/W Port A Sleep mode Configuration Register 0x0
+GPAPUDSLP 0x7F008010 R/W Port A Sleep mode Pull-up/down Register 0x0
+]
+[GPIO B
+GPBCON 0x7F008020 R/W Port B Configuration Register 0x40000
+GPBDAT 0x7F008024 R/W Port B Data Register Undefined
+GPBPUD 0x7F008028 R/W Port B Pull-up/down Register 0x00001555
+GPBCONSLP 0x7F00802C R/W Port B Sleep mode Configuration Register 0x0
+GPBPUDSLP 0x7F008030 R/W Port B Sleep mode Pull-up/down Register 0x0
+]
+[GPIO C
+GPCCON 0x7F008040 R/W Port C Configuration Register 0x0
+GPCDAT 0x7F008044 R/W Port C Data Register Undefined
+GPCPUD 0x7F008048 R/W Port C Pull-up/down Register 0x00005555
+GPCCONSLP 0x7F00804C R/W Port C Sleep mode Configuration Register 0x0
+GPCPUDSLP 0x7F008050 R/W Port C Sleep mode Pull-up/down Register 0x0
+]
+[GPIO D
+GPDCON 0x7F008060 R/W Port D Configuration Register 0x0
+GPDDAT 0x7F008064 R/W Port D Data Register Undefined
+GPDPUD 0x7F008068 R/W Port D Pull-up/down Register 0x00000155
+GPDCONSLP 0x7F00806C R/W Port D Sleep mode Configuration Register 0x0
+GPDPUDSLP 0x7F008070 R/W Port D Sleep mode Pull-up/down Register 0x0
+]
+[GPIO E
+GPECON 0x7F008080 R/W Port E Configuration Register 0x0
+GPEDAT 0x7F008084 R/W Port E Data Register Undefined
+GPEPUD 0x7F008088 R/W Port E Pull-up/down Register 0x00000155
+GPECONSLP 0x7F00808C R/W Port E Sleep mode Configuration Register 0x0
+GPEPUDSLP 0x7F008090 R/W Port E Sleep mode Pull-up/down Register 0x0
+]
+[GPIO F
+GPFCON 0x7F0080A0 R/W Port F Configuration Register 0x0
+GPFDAT 0x7F0080A4 R/W Port F Data Register Undefined
+GPFPUD 0x7F0080A8 R/W Port F Pull-up/down Register 0x55555555
+GPFCONSLP 0x7F0080AC R/W Port F Sleep mode Configuration Register 0x0
+GPFPUDSLP 0x7F0080B0 R/W Port F Sleep mode Pull-up/down Register 0x0
+]
+[GPIO G
+GPGCON 0x7F0080C0 R/W Port G Configuration Register 0x0
+GPGDAT 0x7F0080C4 R/W Port G Data Register Undefined
+GPGPUD 0x7F0080C8 R/W Port G Pull-up/down Register 0x00001555
+GPGCONSLP 0x7F0080CC R/W Port G Sleep mode Configuration Register 0x0
+GPGPUDSLP 0x7F0080D0 R/W Port G Sleep mode Pull-up/down Register 0x0
+]
+[GPIO H
+GPHCON0 0x7F0080E0 R/W Port H Configuration Register 0x0
+GPHCON1 0x7F0080E4 R/W Port H Configuration Register 0x0
+GPHDAT 0x7F0080E8 R/W Port H Data Register Undefined
+GPHPUD 0x7F0080EC R/W Port H Pull-up/down Register 0x00055555
+GPHCONSLP 0x7F0080F0 R/W Port H Sleep mode Configuration Register 0x0
+GPHPUDSLP 0x7F0080F4 R/W Port H Sleep mode Pull-up/down Register 0x0
+]
+[GPIO I
+GPICON 0x7F008100 R/W Port I Configuration Register 0x0
+GPIDAT 0x7F008104 R/W Port I Data Register Undefined
+GPIPUD 0x7F008108 R/W Port I Pull-up/down Register 0x55555555
+GPICONSLP 0x7F00810C R/W Port I Sleep mode Configuration Register 0x0
+GPIPUDSLP 0x7F008110 R/W Port I Sleep mode Pull-up/down Register 0x0
+]
+[GPIO J
+GPJCON 0x7F008120 R/W Port J Configuration Register 0x0
+GPJDAT 0x7F008124 R/W Port J Data Register Undefined
+GPJPUD 0x7F008128 R/W Port J Pull-up/down Register 0x00555555
+GPJCONSLP 0x7F00812C R/W Port J Sleep mode Configuration Register 0x0
+GPJPUDSLP 0x7F008130 R/W Port J Sleep mode Pull-up/down Register 0x0
+]
+[GPIO K
+GPKCON0 0x7F008800 R/W Port K Configuration Register 0 0x22222222
+GPKCON1 0x7F008804 R/W Port K Configuration Register 1 0x22222222
+GPKDAT 0x7F008808 R/W Port K Data Register Undefined
+GPKPUD 0x7F00880C R/W Port K Pull-up/down Register 0x55555555
+]
+[GPIO L
+GPLCON0 0x7F008810 R/W Port L Configuration Register 0x22222222
+GPLCON1 0x7F008814 R/W Port L Configuration Register 0x02222222
+GPLDAT 0x7F008818 R/W Port L Data Register Undefined
+GPLPUD 0x7F00881C R/W Port L Pull-up/down Register 0x15555555
+]
+[GPIO M
+GPMCON 0x7F008820 R/W Port M Configuration Register 0x00222222
+GPMDAT 0x7F008824 R/W Port M Data Register Undefined
+GPMPUD 0x7F008828 R/W Port M Pull-up/down Register 0x000002AA
+]
+[GPIO N
+GPNCON 0x7F008830 R/W Port N Configuration Register 0x0
+GPNDAT 0x7F008834 R/W Port N Data Register Undefined
+GPNPUD 0x7F008838 R/W Port N Pull-up/down Register 0x55555555
+]
+[GPIO O
+GPOCON 0x7F008140 R/W Port O Configuration Register 0xAAAAAAAA
+GPODAT 0x7F008144 R/W Port O Data Register Undefined
+GPOPUD 0x7F008148 R/W Port O Pull-up/down Register 0x0
+GPOCONSLP 0x7F00814C R/W Port O Sleep mode Configuration Register 0x0
+GPOPUDSLP 0x7F008150 R/W Port O Sleep mode Pull-up/down Register 0x0
+]
+[GPIO P
+GPPCON 0x7F008160 R/W Port P Configuration Register 0x2AAAAAAA
+GPPDAT 0x7F008164 R/W Port P Data Register Undefined
+GPPPUD 0x7F008168 R/W Port P Pull-up/down Register 0x1011AAA0
+GPPCONSLP 0x7F00816C R/W Port P Sleep mode Configuration Register 0x0
+GPPPUDSLP 0x7F008170 R/W Port P Sleep mode Pull-up/down Register 0x0
+]
+[GPIO Q
+GPQCON 0x7F008180 R/W Port Q Configuration Register 0x0002AAAA
+GPQDAT 0x7F008184 R/W Port Q Data Register Undefined
+GPQPUD 0x7F008188 R/W Port Q Pull-up/down Register 0x0
+GPQCONSLP 0x7F00818C R/W Port Q Sleep mode Configuration Register 0x0
+GPQPUDSLP 0x7F008190 R/W Port Q Sleep mode Pull-up/down Register 0x0
+]
+[Special Port Configuration
+SPCON 0x7F0081A0 R/W Special Port Configuration Register 0xBFC11500
+]
+[Memory Port
+MEM0CONSLP0 0x7F0081C0 R/W Memory Port 0 Sleep mode configure 0 0x0
+MEM0CONSLP1 0x7F0081C4 R/W Memory Port 0 Sleep mode configure 1 0x0
+MEM1CONSLP 0x7F0081C8 R/W Memory Port 1 Sleep mode configure 0x0
+RESERVED 0x7F0081CC - RESERVED -
+MEM0DRVCON 0x7F0081D0 R/W Memory Port 0 Drive strength Control Register 0x10555551
+MEM1DRVCON 0x7F0081D4 R/W Memory Port 0 Drive strength Control Register 0x555555
+]
+
+[External Interrupt 1 To 9
+EINT12CON 0x7F008200 R/W External Interrupt 1,2 Configuration Register 0x0
+EINT34CON 0x7F008204 R/W External Interrupt 3,4 Configuration Register 0x0
+EINT56CON 0x7F008208 R/W External Interrupt 5,6 Configuration Register 0x0
+EINT78CON 0x7F00820C R/W External Interrupt 7,8 Configuration Register 0x0
+EINT9CON 0x7F008210 R/W External Interrupt 9 Configuration Register 0x0
+RESERVED 0x7F008214~0x7F00821C - RESERVED -
+EINT12FLTCON 0x7F008220 R/W External Interrupt 1,2 Filter Control Register 0x0
+EINT34FLTCON 0x7F008224 R/W External Interrupt 3,4 Filter Control Register 0x0
+EINT56FLTCON 0x7F008228 R/W External Interrupt 5,6 Filter Control Register 0x0
+EINT78FLTCON 0x7F00822C R/W External Interrupt 7,8 Filter Control Register 0x0
+EINT9FLTCON 0x7F008230 R/W External Interrupt 9 Filter Control Register 0x0
+RESERVED 0x7F008234~0x7F00823C - RESERVED -
+EINT12MASK 0x7F008240 R/W External Interrupt 1,2 Mask Register 0x00FF7FFF
+EINT34MASK 0x7F008244 R/W External Interrupt 3,4 Mask Register 0x3FFF03FF
+EINT56MASK 0x7F008248 R/W External Interrupt 5,6 Mask Register 0x03FF007F
+EINT78MASK 0x7F00824C R/W External Interrupt 7,8 Mask Register 0x7FFFFFFF
+EINT9MASK 0x7F008250 R/W External Interrupt 9 Mask Register 0x000001FF
+RESERVED 0x7F008254~0x7F00825C - RESERVED -
+EINT12PEND 0x7F008260 R/W External Interrupt 1,2 Pending Register 0x0
+EINT34PEND 0x7F008264 R/W External Interrupt 3,4 Pending Register 0x0
+EINT56PEND 0x7F008268 R/W External Interrupt 5,6 Pending Register 0x0
+EINT78PEND 0x7F00826C R/W External Interrupt 7,8 Pending Register 0x0
+EINT9PEND 0x7F008270 R/W External Interrupt 9 Pending Register 0x0
+]
+[External Interrupt 0
+EINT0CON0 0x7F008900 R/W External Interrupt configuration Register 0 0x0
+EINT0CON1 0x7F008904 R/W External Interrupt configuration Register 1 0x0
+RESERVED 0x7F008908~0x7F00890C - RESERVED -
+EINT0FLTCON0 0x7F008910 R/W External Interrupt Filter Control Register 0 0x0
+EINT0FLTCON1 0x7F008914 R/W External Interrupt Filter Control Register 1 0x0
+EINT0FLTCON2 0x7F008918 R/W External Interrupt Filter Control Register 2 0x0
+EINTF0LTCON3 0x7F00891C R/W External Interrupt Filter Control Register 3 0x0
+EINT0MASK 0x7F008920 R/W External Interrupt Mask Register 0x0FFFFFFF
+EINT0PEND 0x7F008924 R/W External Interrupt Pending Register 0x0
+]
+[Special Port Sleep mode configure
+SPCONSLP 0x7F008880 R/W Special Port Sleep mode configure Register 0x00000010
+]
+[Sleep Mode Pad Configure
+SLPEN 0x7F008930 R/W Sleep Mode Pad Configure Register 0x0
+]
+[External Interrupt common
+PRIORITY 0x7F008280 R/W Priority Control Register 0x000003FF
+SERVICE 0x7F008284 R Current Service Register 0x0
+SERVICEPEND 0x7F008288 R Current Service Pending Register 0x0
+]
+[Nand flash controller
+NFCONF 0x70200000 R/W Configuration register 0xX000_100X
+NFCONT 0x70200004 R/W Control register 0x0001_00C6
+NFCMMD 0x70200008 R/W Command register 0x0000_0000
+NFADDR 0x7020000c R/W Address register 0x0000_0000
+NFDATA 0x70200010 R/W Data register 0xXXXX_XXXX
+NFMECCD0 0x70200014 R/W 1st and 2nd main ECC data register 0x0000_0000
+NFMECCD1 0x70200018 R/W 3rd and 4th main ECC data register 0x0000_0000
+NFSECCD 0x7020001c R/W Spare ECC read register 0x0000_0000
+NFSBLK 0x70200020 R/W Programmable start block address register 0x0000_0000
+NFEBLK 0x70200024 R/W Programmable end block address register 0x0000_0000
+NFSTAT 0x70200028 R/W NAND status registet 0x0080_001D
+NFECCERR0 0x7020002C R ECC error status0 register 0xXXXX_XXXX
+NFECCERR1 0x70200030 R ECC error status1 register 0x0000_0000
+NFMECC0 0x70200034 R Generated ECC status0 register 0xXXXX_XXXX
+NFMECC1 0x70200038 R Generated ECC status1 register 0xXXXX_XXXX
+NFSECC 0x7020003C R Generated Spare area ECC status register 0xXXXX_XXXX
+NFMLCBITPT 0x70200040 R 4-bit ECC error bit pattern register 0x0000_0000
+NF8ECCERR0 0x70200044 R 8bit ECC error status0 register 0x4000_0000
+NF8ECCERR1 0x70200048 R 8bit ECC error status1 register 0x0000_0000
+NF8ECCERR2 0x7020004C R 8bit ECC error status2 register 0x0000_0000
+NFM8ECC0 0x70200050 R Generated 8-bit ECC status0 register 0xXXXX_XXXX
+NFM8ECC1 0x70200054 R Generated 8-bit ECC status1 register 0xXXXX_XXXX
+NFM8ECC2 0x70200058 R Generated 8-bit ECC status2 register 0xXXXX_XXXX
+NFM8ECC3 0x7020005C R Generated 8-bit ECC status3 register 0xXXXX_XXXX
+NFMLC8BITPT0 0x70200060 R 8-bit ECC error bit pattern 0 register 0x0000_0000
+NFMLC8BITPT1 0x70200064 R 8-bit ECC error bit pattern 1 register 0x0000_0000
+]

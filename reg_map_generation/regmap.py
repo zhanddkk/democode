@@ -72,9 +72,9 @@ class Item:
                             pass
                         elif _step == 2:
                             if (_tmp_txt == 'R') or (_tmp_txt == '-'):
-                                self.__permission = '__O'
-                            elif _tmp_txt == 'W':
                                 self.__permission = '__I'
+                            elif _tmp_txt == 'W':
+                                self.__permission = '__O'
                             elif _tmp_txt == 'R/W':
                                 self.__permission = '__IO'
                             else:
@@ -117,7 +117,7 @@ class StructureData:
         else:
             raise SystemError('structure name must be string type')
         self.__items = {}
-        self.__base_address = None
+        self.__members = None
         pass
 
     @property
@@ -127,24 +127,29 @@ class StructureData:
 
     @property
     def base_address(self):
-        if self.__base_address is None:
-            self.__base_address = self.members[0].address[0]
-        return self.__base_address
+        return self.members[0].address[0]
+
+    @property
+    def end_address(self):
+        _size = len(self.members)
+        return self.members[_size - 1].address[0]
 
     @property
     def members(self):
-        _items_list = []
-        for _item in self.__items.values():
-            if isinstance(_item, list):
-                for _sub_item in _item:
-                    _items_list.append(_sub_item)
+        if self.__members is None:
+            _items_list = []
+            for _item in self.__items.values():
+                if isinstance(_item, list):
+                    for _sub_item in _item:
+                        _items_list.append(_sub_item)
+                        pass
                     pass
-                pass
-            else:
-                _items_list.append(_item)
-        _items_list = sorted(_items_list, key=lambda _item: _item.address[0])
-        self.__items_check(_items_list)
-        return _items_list
+                else:
+                    _items_list.append(_item)
+            _items_list = sorted(_items_list, key=lambda _item: _item.address[0])
+            self.__items_check(_items_list)
+            self.__members = _items_list
+        return self.__members
         pass
 
     def add_item(self, item):
@@ -164,7 +169,7 @@ class StructureData:
                 pass
             else:
                 self.__items[item.name] = item
-            self.__base_address = None
+            self.__members = None
         else:
             raise SystemError('system error for tool(item:{} type is invalid)'.format(item))
         pass
@@ -199,7 +204,10 @@ class StructureData:
         pass
 
     def __str__(self):
-        return '{}: {} members'.format(self.__name, len(self.__items))
+        return '[0x{:0>8X} ~ 0x{:0>8X}] {}: {} members'.format(self.base_address,
+                                                               self.end_address,
+                                                               self.__name,
+                                                               len(self.__items))
     pass
 
 
