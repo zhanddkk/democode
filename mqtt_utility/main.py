@@ -33,6 +33,14 @@ def _calculate_sn_base64(sn):
     pass
 
 
+def _create_tuner_password(sn):
+    base64_code = base64.b64encode(_calculate_sn_base64(sn))
+    password = (sn + bytes.decode(base64_code, 'utf-8'))
+    print('user: Tuner | password: {}'.format(password))
+    return password
+    pass
+
+
 def main():
     i = 0
     instance = _Client("TestClient")
@@ -43,9 +51,9 @@ def main():
     password = (sn + bytes.decode(base64_code, 'utf-8'))
     user = 'Tuner'
     instance.username_pw_set(username=user, password=password)
-    # instance.connect('169.254.5.1', 8883, 60)
+    instance.connect('169.254.5.1', 8883, 60)
     # instance.connect('10.177.58.98', 8883, 60)
-    instance.connect('192.168.1.102', 8883, 60)
+    # instance.connect('192.168.1.102', 8883, 60)
     instance.subscribe('Test', 0)
     instance.loop_start()
 
@@ -82,6 +90,6 @@ def main_no_cet():
 
 
 if __name__ == '__main__':
-    # main()
-    main_no_cet()
+    main()
+    # main_no_cet()
     pass
