@@ -10,7 +10,6 @@ class UdpMessageHandler(socketserver.DatagramRequestHandler):
         print('Received form {}:'.format(self.client_address),
               '{}'.format(', '.join('{:02X}'.format(byte) for byte in data)))
         self.socket.sendto(data, self.client_address)
-        # print(self.server)
     pass
 
 
@@ -39,7 +38,7 @@ class Server:
 
 
 def main():
-    s = Server('', 8000)
+    s = Server('', 1081)
     s.start()
     while True:
         time.sleep(1)
@@ -70,5 +69,6 @@ def compress():
 
 
 if __name__ == '__main__':
-    compress()
+    # compress()
+    main()
     pass

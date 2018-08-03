@@ -51,9 +51,10 @@ def main():
     password = (sn + bytes.decode(base64_code, 'utf-8'))
     user = 'Tuner'
     instance.username_pw_set(username=user, password=password)
-    instance.connect('169.254.5.1', 8883, 60)
+    instance.will_set(topic='Device/Tuner/Identity/Status/UnitPresentStatus', payload='123456')
+    # instance.connect('169.254.5.1', 8883, 60)
     # instance.connect('10.177.58.98', 8883, 60)
-    # instance.connect('192.168.1.102', 8883, 60)
+    instance.connect('192.168.1.102', 8883, 10)
     instance.subscribe('Test', 0)
     instance.loop_start()
 
@@ -61,7 +62,16 @@ def main():
         time.sleep(1)
         instance.publish(topic='Test', payload='I am a message [{}]!'.format(i))
         i += 1
+        if i >= 5:
+            # instance.socket().close()
+            instance.loop_stop()
+            instance.disconnect()
+            print('======================')
+            break
         pass
+    while True:
+        time.sleep(1)
+        print('-----')
     pass
 
 
@@ -75,7 +85,7 @@ def main_no_cet():
     password = '2779'
     instance.username_pw_set(username=user, password=password)
     # instance.connect('192.168.23.3', 1883, 60)
-    instance.connect('192.168.1.101', 1883, 60)
+    instance.connect('192.168.1.102', 1883, 60)
     instance.subscribe('Request/UPSSystem/Setting/MainsConfigurationSetting', 0)
     # instance.subscribe('Test', 0)
     instance.loop_start()
@@ -84,7 +94,6 @@ def main_no_cet():
         time.sleep(1)
         instance.publish(topic='Test', payload='I am a message [{}]!'.format(i))
         i += 1
-        pass
     pass
     pass
 

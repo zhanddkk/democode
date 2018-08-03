@@ -41,14 +41,16 @@ def build_lib_mosquitto():
         'docbook-xsl',
         'xsltproc'
     )
+
+    _project_dir = 'secure_power_agilis_lib_mosquitto'
     if check_dep_packages(_dep_packages):
         subprocess.call(
-            ['git', 'clone', 'ssh://teamforge.schneider-electric.com:29418/secure_power_agilis_lib_mosquitto'])
+            ['git', 'clone', 'ssh://teamforge.schneider-electric.com:29418/{}'.format(_project_dir)])
         _os.chdir('secure_power_agilis_lib_mosquitto')
         subprocess.call(['git', 'checkout', 'Dev'])
         subprocess.call(['make', 'install', 'DESTDIR={}'.format(_build_output)])
         _os.chdir(_here)
-        subprocess.call(['rm', '-rf', 'secure_power_agilis_lib_mosquitto'])
+        subprocess.call(['rm', '-rf', _project_dir])
     pass
 
 
@@ -183,5 +185,10 @@ def main():
 
 
 if __name__ == '__main__':
-    main()
+    # main()
+    import datetime
+    print(datetime.datetime.now())
+    with open('text.txt', '+a') as _f:
+        _f.write(('[{}]===\r\n'.format(datetime.datetime.now())))
+        pass
     pass
