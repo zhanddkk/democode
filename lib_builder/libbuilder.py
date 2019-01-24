@@ -175,20 +175,20 @@ def build_tinycbor():
 
 def main():
     # build_lib_mosquitto()
-    # build_lib_modbus()
+    build_lib_modbus()
     # build_cn_cbor()
     # build_google_gmock()
     # build_berkeley_db()
     # build_libusb()
-    build_tinycbor()
+    # build_tinycbor()
     pass
 
 
 if __name__ == '__main__':
-    # main()
-    import datetime
-    print(datetime.datetime.now())
-    with open('text.txt', '+a') as _f:
-        _f.write(('[{}]===\r\n'.format(datetime.datetime.now())))
-        pass
+    main()
+    # import datetime
+    # print(datetime.datetime.now())
+    # with open('text.txt', '+a') as _f:
+    #     _f.write(('[{}]===\r\n'.format(datetime.datetime.now())))
+    #     pass
     pass

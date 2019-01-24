@@ -1,4 +1,22 @@
-import socketserver
+# ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#
+#                  www.schneider-electric.com
+#
+#  Copyright (c) APC by Schneider Electric 2018
+#  This computer program, created in 2018 IS A TRADE SECRET WHICH IS
+#  THE PROPERTY OF APC by SCHNEIDER. ALL USE, DISCLOSURE, AND/OR
+#  REPRODUCTION NOT SPECIFICALLY AUTHORIZED BY APC by SCHNEIDER IS
+#  PROHIBED. This program may also be protected under the copyright and
+#  trade-secret laws of countries other than the USA.
+#  All right reserved.
+#
+# ----------------------------------------------------------------------------------
+#
+#  Version:    0.0.2
+#  Description: A implementation for UPS Ethernet Protocol by python
+#  Original Author: lei.zhan@schneider-electric
+#
+# ==================================================================================
 try:
     from collections import OrderedDict as _OrderedDict
 except SystemError:
@@ -6,6 +24,9 @@ except SystemError:
 from queue import Queue, Empty
 import threading
 import socket
+from typing import Union
+import time
+import select
 
 
 class UpsEthernetProtocolCRC16:
@@ -80,6 +101,8 @@ class UpsEthernetProtocolFrame:
                "data_length_count",
                "data",
                "check_sum")
+    MAX_FRAME_SIZE = 64
+    MAX_DATA_SIZE = 50
 
     def __init__(self):
         self.__protocol_id = 0x00
@@ -285,9 +308,9 @@ class UpsEthernetProtocolFrame:
     def data(self, value):
         if isinstance(value, bytearray) or isinstance(value, bytes):
             _len = len(value)
-            if _len > 50:
-                _len = 50
-                value = value[:50]
+            if _len > self.MAX_DATA_SIZE:
+                _len = self.MAX_DATA_SIZE
+                value = value[:self.MAX_DATA_SIZE]
             self.__data_length_count = _len
             if self.__data_length_count > 8:
                 self.__data = bytearray(self.__data_length_count)
@@ -307,12 +330,12 @@ class UpsEthernetProtocolFrame:
     def set_data(self, data_bytes, length=None):
         if isinstance(data_bytes, bytearray) or isinstance(data_bytes, bytes):
             _len = len(data_bytes)
-            if _len > 50:
-                _len = 50
-                data_bytes = data_bytes[:50]
+            if _len > self.MAX_DATA_SIZE:
+                _len = self.MAX_DATA_SIZE
+                data_bytes = data_bytes[:self.MAX_DATA_SIZE]
 
             if isinstance(length, int):
-                if (length >= 0) and (length < 50):
+                if (length >= 0) and (length <= self.MAX_DATA_SIZE):
                     _len = length
                 else:
                     raise ValueError(
@@ -414,112 +437,46 @@ class MessageIdFrameFilter(BasicFrameFilter):
     pass
 
 
-class UdpMessageHandler(socketserver.BaseRequestHandler):
-    message_queue = None
-    frame_filter = BasicFrameFilter()
-    lock_set_frame_filter = threading.Lock()
+class UepMessageReader:
+    crc16_calculator = UpsEthernetProtocolCRC16()
 
-    def handle(self):
-        data = self.request[0]
-        try:
-            frame = UpsEthernetProtocolFrame()
-            frame.bytes = data
-            self.lock_set_frame_filter.acquire()
-            if isinstance(self.message_queue, Queue) and self.frame_filter.compare(frame):
-                self.message_queue.put(frame)
-            self.lock_set_frame_filter.release()
-            # print('Received:', frame)
-        except ValueError:
-            print('Received:', 'Invalid frame({})'.format(', '.join('{:02X}'.format(byte) for byte in data)))
-
-        pass
-    pass
-
-
-class ThreadedUdpServer(socketserver.ThreadingMixIn, socketserver.UDPServer):
-    pass
-
-
-class UpsEthernetProtocol:
-
-    def __init__(self, remote='localhost', remote_port=8080, local=None,  local_port=8081):
+    def __init__(self, msg_filter: BasicFrameFilter=BasicFrameFilter()):
         """
-        The UPS ethernet communication protocol module init
-        :param remote: the remote target ip (string, default: localhost)
-        :param remote_port: the remote target net port (int, default: 8080)
-        :param local: local machine ip (string, default: use the host name that get from socket.gethostname())
-        :param local_port: local machine net port (int, default: 8081)
+        The message reader init
+        :param msg_filter: A instance of BasicFrameFilter or BasicFrameFilter's subclass
         """
-        self.__remote = remote
-        self.__remote_port = remote_port
-        self.__local_port = local_port
-        self.__local = socket.gethostname() if local is None else local
-        self.__frame_queue = Queue()
-        UdpMessageHandler.message_queue = self.__frame_queue
-        self.__udp_server = ThreadedUdpServer((self.__local, self.__local_port), UdpMessageHandler)
-        self.__udp_server_thread = None
-        self.__udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.__crc16_calculator = UpsEthernetProtocolCRC16()
-        self.__rolling_counter = 0
+        self.__filter = msg_filter
+        self.__msg_queue = Queue()
         pass
 
-    def start_server(self):
-        """
-        Start a thread to listen the udp 
-        :return: 
-        """
-        self.__udp_server_thread = threading.Thread(target=self.__udp_server.serve_forever)
-        self.__udp_server_thread.daemon = True
-        self.__rolling_counter = 0
-        self.__udp_server_thread.start()
-        pass
-
-    def stop_server(self):
-        """
-        Stop to listen the udp
-        :return: 
-        """
-        self.__udp_server.shutdown()
-        self.__udp_server.server_close()
-        pass
-
-    @staticmethod
-    def set_frame_filter(frame_filter):
-        """
-        Set the frame filter
-        :param frame_filter: A instance of BasicFrameFilter or BasicFrameFilter's subclass
-        :return: 
-        """
-        if isinstance(frame_filter, BasicFrameFilter):
-            UdpMessageHandler.lock_set_frame_filter.acquire()
-            UdpMessageHandler.frame_filter = frame_filter
-            UdpMessageHandler.lock_set_frame_filter.release()
+    def on_received(self, msg: UpsEthernetProtocolFrame):
+        if self.__filter.compare(msg):
+            self.__msg_queue.put(msg)
             pass
-        else:
-            raise ValueError('{} is invalid frame filter'.format(frame_filter))
         pass
 
-    def clear_message_buffer(self):
+    def reset(self):
         """
-        Clear the queue buffer of frame
+        Clear the message buffer
         :return:
         """
-        _q = self.__frame_queue.queue
-        with self.__frame_queue.mutex:
+        with self.__msg_queue.mutex:
+            _q = self.__msg_queue.queue
             _q.clear()
+            pass
         pass
 
-    def read_frame(self, timeout=None):
+    def get(self, timeout=None) -> Union[UpsEthernetProtocolFrame, None]:
         """
-        Read a frame from the queue buffer
+        Get frame from the message buffer with the timeout
         :param timeout: timeout as second for this read (float, default: None)
         :return: A instance of UpsEthernetProtocolFrame: read succeed
                 None: timeout
         """
         try:
-            _frame = self.__frame_queue.get(timeout=timeout)
+            _frame = self.__msg_queue.get(timeout=timeout)
             if _frame.message_type & 0b000100 != 0:
-                _crc16 = self.__crc16_calculator.calculate_crc16_for_bytes(_frame.bytes, _frame.length - 2)
+                _crc16 = self.crc16_calculator.calculate_crc16_for_bytes(_frame.bytes, _frame.length - 2)
                 if _crc16 != _frame.check_sum:
                     print('ERROR:', 'CRC 16 check failed (in frame={:04X}, calculate={:04X})'.format(_frame.check_sum,
                                                                                                      _crc16))
@@ -528,12 +485,59 @@ class UpsEthernetProtocol:
         except Empty:
             return None
         pass
+    pass
 
-    def send_frame_bytes(self, frame_bytes):
-        self.__udp_socket.sendto(frame_bytes, (self.__remote, self.__remote_port))
+
+class UpsEthernetProtocol:
+    def __init__(self, remote='localhost', remote_port=8080, local='0.0.0.0',  local_port=8081):
+        """
+        The UPS ethernet communication protocol module init
+        :param remote: the remote target ip (string, default: localhost)
+        :param remote_port: the remote target net port (int, default: 8080)
+        :param local: local machine ip (string, default: use all IPs of the computer)
+        :param local_port: local machine net port (int, default: 8081)
+        """
+        self.__remote = (remote, remote_port)
+        self.__local = (local, local_port)
+        self.__udp_socket = None
+        self.__udp_server_thread = None
+        self.__rolling_counter = 0
+        self.__reader = []
+        self.__reader_lock = threading.Lock()
+        self.__terminal = False
         pass
 
-    def send_frame(self, frame, rolling_counter=None):
+    def start_server(self):
+        """
+        Start a thread to listen the udp
+        :return:
+        """
+        if self.__udp_server_thread is None:
+            self.__terminal = False
+            self.__udp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+            self.__udp_socket.bind(self.__local)
+            self.__udp_server_thread = threading.Thread(target=self.__run)
+            self.__udp_server_thread.daemon = True
+            self.__udp_server_thread.start()
+            pass
+        pass
+
+    def stop_server(self):
+        """
+        Stop to listen the udp
+        :return:
+        """
+        if isinstance(self.__udp_server_thread, threading.Thread):
+            if self.__udp_server_thread.isAlive():
+                self.__terminal = True
+                self.__udp_socket.close()
+                self.__udp_server_thread.join()
+                self.__udp_server_thread = None
+                pass
+            pass
+        pass
+
+    def send_frame(self, frame: UpsEthernetProtocolFrame, rolling_counter=None):
         """
         Send a frame
         :param frame: A instance of UpsEthernetProtocolFrame that need to be send
@@ -546,80 +550,152 @@ class UpsEthernetProtocol:
             (rolling_counter if isinstance(rolling_counter, int) else self.__rolling_counter + 1) & 0xff
         frame.rolling_counter = self.__rolling_counter
         if frame.message_type & 0b000100 != 0:
-            frame.check_sum = self.__crc16_calculator.calculate_crc16_for_bytes(frame.bytes, frame.length - 2)
+            frame.check_sum = UepMessageReader.crc16_calculator.calculate_crc16_for_bytes(frame.bytes, frame.length - 2)
         self.send_frame_bytes(frame.bytes)
-        # print('Send:', frame)
         return frame
         pass
-    pass
 
+    def read_frame(self, reader: UepMessageReader, timeout=None):
+        """
+        Read a frame from the queue buffer
+        :param reader: the message reader instance that has been added into the server
+        :param timeout: timeout as second for this read (float, default: None)
+        :return: A instance of UpsEthernetProtocolFrame: read succeed
+                None: timeout
+        """
+        if reader in self.__reader:
+            return reader.get(timeout)
+        else:
+            return None
+        pass
+
+    def append_reader(self, reader: UepMessageReader):
+        """
+        Add a message reader into the UEP server
+        :param reader: the message reader instance that should be added into the server
+        :return:
+        """
+        self.__reader_lock.acquire()
+        if reader in self.__reader:
+            pass
+        else:
+            self.__reader.append(reader)
+            pass
+        self.__reader_lock.release()
+        pass
+
+    def remove_reader(self, reader: UepMessageReader):
+        """
+        Remove a message reader into the UEP server
+        :param reader: the message reader instance that should be removed from the server
+        :return:
+        """
+        self.__reader_lock.acquire()
+        if reader in self.__reader:
+            self.__reader.remove(reader)
+            pass
+        else:
+            pass
+        self.__reader_lock.release()
+        pass
+
+    def send_frame_bytes(self, frame_bytes):
+        for _i in range(11):
+            _n_byte = self.__udp_socket.sendto(frame_bytes, self.__remote)
+            if _n_byte == len(frame_bytes):
+                break
+                pass
+            else:
+                if _i < 10:
+                    time.sleep(0.1)
+                    pass
+                else:
+                    raise socket.error('Send frame failed')
+            pass
+        pass
+
+    def __run(self):
+        print('INFO: UEP server is running')
+        while True:
+            _ready = select.select([self.__udp_socket], [], [], 1)[0]
+            if _ready:
+                _socket = _ready[0]
+                _frame = UpsEthernetProtocolFrame()
+                if _socket.fileno() < 0:
+                    pass
+                else:
+                    _data = _socket.recvfrom(UpsEthernetProtocolFrame.MAX_FRAME_SIZE)
+                    _frame.bytes = _data[0]
+                    self.__reader_lock.acquire()
+                    for _reader in self.__reader:
+                        _reader.on_received(_frame)
+                        pass
+                    self.__reader_lock.release()
+                    pass
+                pass
+            if self.__terminal:
+                print('INFO: UEP server is stopped')
+                break
+            pass
+        pass
+    pass
 
 # ======================================================================================================================
 # Demo code
 # ----------------------------------------------------------------------------------------------------------------------
 
 
-def __demo_task(host, port, cmd_line_queue, cmd_line_processed):
-    _ups_ethernet_protocol = UpsEthernetProtocol(remote=host, remote_port=port, local=host, local_port=port)
-    _ups_ethernet_protocol.set_frame_filter(MessageIdFrameFilter(message_id=0x00000001))
-    _ups_ethernet_protocol.start_server()
-
-    while True:
-        _frame = _ups_ethernet_protocol.read_frame(5)
-        if _frame:
-            print('I have received a valid frame({})'.format(_frame))
-        else:
-            print('I have received a invalid frame or not have received any frame with timeout')
-
-        try:
-            cmd_line = cmd_line_queue.get(timeout=0.1)
-            if isinstance(cmd_line, str):
-                if cmd_line.rstrip().upper() == 'STOP':
-                    _ups_ethernet_protocol.stop_server()
-                    cmd_line_processed.set()
-                    return
-                elif cmd_line.rstrip().upper() == 'SEND':
-                    _frame = UpsEthernetProtocolFrame()
-                    _frame.protocol_id = 0x0f
-                    _frame.source = 0x3f
-                    _frame.priority = 0b1
-                    _frame.message_type = 0b111
-                    _frame.message_id = 0x00000002
-                    # _frame.data = b'1234567'
-                    _frame.set_data(b'ABC_DEF_HIJ_KLM', 20)
-                    _ups_ethernet_protocol.send_frame(_frame)
-                    pass
-                else:
-                    cmd_line_args = cmd_line.split(' ')
-                    if len(cmd_line_args) >= 2:
-                        if cmd_line_args[0].strip().upper() == 'FID':
-                            _id = int(cmd_line_args[1].strip())
-                            _ups_ethernet_protocol.set_frame_filter(MessageIdFrameFilter(_id))
-                    pass
-
-            cmd_line_processed.set()
-        except Empty:
-            pass
-    pass
-
-
-def demo(host, port):
+def demo():
     import sys
-    _cmd_line_queue = Queue()
-    _cmd_line_processed = threading.Event()
-    _demo_sub_thread = threading.Thread(target=__demo_task,
-                                        args=(host, port, _cmd_line_queue, _cmd_line_processed))
-    _demo_sub_thread.start()
+    _line = sys.stdin.readline()
+    if _line == '1\n':
+        _remote = '192.168.10.129'
+        pass
+    else:
+        _remote = '169.254.2.129'
+        pass
+    print(_remote)
+    _uep = UpsEthernetProtocol(remote=_remote, remote_port=8081,
+                               local='0.0.0.0', local_port=8081)
+    # _reader = UepMessageReader(MessageIdFrameFilter(message_id=0xFFFFFFFE))
+    _reader = UepMessageReader(MessageIdFrameFilter(message_id=0x0d))
+    _uep.append_reader(_reader)
+    _uep.start_server()
     while True:
-        line = sys.stdin.readline()
-        _cmd_line_processed.clear()
-        _cmd_line_queue.put(line)
-        while not _cmd_line_processed.isSet():
+        _line = sys.stdin.readline()
+        if isinstance(_line, str):
+            _cmd = _line.strip().upper()
+            if _cmd == 'SEND':
+                _frame = UpsEthernetProtocolFrame()
+                _frame.protocol_id = 0x0f
+                _frame.source = 0x3f
+                _frame.priority = 0b1
+                _frame.message_type = 0b111
+                # _frame.message_id = 0xFFFFFFFE
+                _frame.message_id = 0x0d
+                # _frame.set_data(b'ABC_DEF_HIJ_KLM', 20)
+                _frame.set_data(b'12345678', 8)
+                print(_frame)
+                _uep.send_frame(_frame)
+                pass
+            elif _cmd == 'STOP':
+                _uep.stop_server()
+                pass
+            elif _cmd == 'START':
+                _uep.start_server()
+                pass
+            elif _cmd == 'READ':
+                print(_uep.read_frame(_reader, 1))
+                pass
+            elif _cmd == 'EXIT':
+                break
+                pass
             pass
-        if not _demo_sub_thread.isAlive():
-            break
+        pass
+    print('====exit====')
     pass
+
 
 if __name__ == '__main__':
-    demo('192.168.10.129', 8081)
+    demo()
     pass
